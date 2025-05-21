@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=3 uid="uid://blddmq3o4eq0f"]
+
+[ext_resource type="Texture2D" uid="uid://ldo5yvfqx6l3" path="res://Assets/Scenes/Studyroom/Study_room.png" id="1_okucx"]
+
+[node name="Studyroom" type="Node2D"]
+
+[node name="StudyRoom" type="Sprite2D" parent="."]
+position = Vector2(224, 224)
+texture = ExtResource("1_okucx")

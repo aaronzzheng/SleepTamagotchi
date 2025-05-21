@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://blwi8eu3kpyu2"]
+
+[ext_resource type="Texture2D" uid="uid://bvaujvs6he2vg" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
+[ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_4bhxk"]
+
+[node name="Node2D" type="Node2D"]
+
+[node name="BedroomFull" type="Sprite2D" parent="."]
+position = Vector2(224, 224)
+texture = ExtResource("1_hvgi1")
+
+[node name="Sprite2D" parent="." instance=ExtResource("2_4bhxk")]
+position = Vector2(216, 336)
