@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bvaujvs6he2vg" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
 [ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_4bhxk"]
-[ext_resource type="PackedScene" uid="uid://cnxmkmur5cjvy" path="res://Scenes/Buttons.tscn" id="5_e8oy3"]
+[ext_resource type="PackedScene" path="res://Scenes/Buttons.tscn" id="5_e8oy3"]
 
 [node name="Node2D" type="Node2D"]
 

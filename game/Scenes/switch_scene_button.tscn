@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://3nbvsykpgo0h"]
+
+[ext_resource type="Texture2D" uid="uid://c3qeep6hs4o12" path="res://Assets/Sprites/Triangle_button.png" id="1_eqc3w"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tr74m"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="Switch_scene_button" type="Node2D"]
+
+[node name="TriangleButton" type="Sprite2D" parent="."]
+position = Vector2(25, 28)
+texture = ExtResource("1_eqc3w")
+
+[node name="Button" type="Button" parent="."]
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 44.0
+offset_bottom = 53.0
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_tr74m")
+theme_override_styles/hover = SubResource("StyleBoxFlat_tr74m")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_tr74m")
+theme_override_styles/normal = SubResource("StyleBoxFlat_tr74m")

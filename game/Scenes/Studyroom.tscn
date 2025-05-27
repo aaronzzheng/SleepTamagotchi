@@ -1,16 +1,33 @@
-[gd_scene load_steps=4 format=3 uid="uid://blddmq3o4eq0f"]
+[gd_scene load_steps=6 format=3 uid="uid://blddmq3o4eq0f"]
 
-[ext_resource type="Texture2D" uid="uid://ldo5yvfqx6l3" path="res://Assets/Scenes/Studyroom/Study_room.png" id="1_okucx"]
+[ext_resource type="Texture2D" uid="uid://l7hbrcul25wu" path="res://Assets/Scenes/Studyroom/Background.png" id="1_4jwpd"]
 [ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_jnoo7"]
-[ext_resource type="PackedScene" uid="uid://cnxmkmur5cjvy" path="res://Scenes/Buttons.tscn" id="3_0uedr"]
+[ext_resource type="PackedScene" path="res://Scenes/Buttons.tscn" id="3_0uedr"]
+[ext_resource type="Texture2D" uid="uid://fwx67sj3bgog" path="res://Assets/Scenes/Studyroom/Window.png" id="3_nequs"]
+[ext_resource type="Texture2D" uid="uid://d2wgqy4gyr4cr" path="res://Assets/Scenes/Studyroom/Bookshelf.png" id="4_2shwq"]
 
 [node name="Studyroom" type="Node2D"]
 
-[node name="StudyRoom" type="Sprite2D" parent="."]
-position = Vector2(224, 224)
-texture = ExtResource("1_okucx")
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(225, 225)
+texture = ExtResource("1_4jwpd")
 
 [node name="Mochi" parent="." instance=ExtResource("2_jnoo7")]
 position = Vector2(216, 336)
 
 [node name="Buttons" parent="." instance=ExtResource("3_0uedr")]
+
+[node name="Window" type="Sprite2D" parent="."]
+position = Vector2(154, 137)
+scale = Vector2(0.876543, 0.859116)
+texture = ExtResource("3_nequs")
+
+[node name="Bookshelf" type="Sprite2D" parent="."]
+position = Vector2(319, 235)
+scale = Vector2(0.81694, 0.977477)
+texture = ExtResource("4_2shwq")
+
+[node name="Bookshelf2" type="Sprite2D" parent="."]
+position = Vector2(319, 128)
+scale = Vector2(0.81694, 0.977477)
+texture = ExtResource("4_2shwq")
