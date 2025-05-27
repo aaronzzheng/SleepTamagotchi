@@ -1,9 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://blddmq3o4eq0f"]
+[gd_scene load_steps=4 format=3 uid="uid://blddmq3o4eq0f"]
 
 [ext_resource type="Texture2D" uid="uid://ldo5yvfqx6l3" path="res://Assets/Scenes/Studyroom/Study_room.png" id="1_okucx"]
+[ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_jnoo7"]
+[ext_resource type="PackedScene" uid="uid://cnxmkmur5cjvy" path="res://Scenes/Buttons.tscn" id="3_0uedr"]
 
 [node name="Studyroom" type="Node2D"]
 
 [node name="StudyRoom" type="Sprite2D" parent="."]
 position = Vector2(224, 224)
 texture = ExtResource("1_okucx")
+
+[node name="Mochi" parent="." instance=ExtResource("2_jnoo7")]
+position = Vector2(216, 336)
+
+[node name="Buttons" parent="." instance=ExtResource("3_0uedr")]

@@ -1,9 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://bmv4pqu87ooxp"]
+[gd_scene load_steps=4 format=3 uid="uid://bmv4pqu87ooxp"]
 
 [ext_resource type="Texture2D" uid="uid://m84qrbcprpcm" path="res://Assets/Scenes/Bathroom/Bathroom.png" id="1_wqx55"]
+[ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_kvr28"]
+[ext_resource type="PackedScene" uid="uid://cnxmkmur5cjvy" path="res://Scenes/Buttons.tscn" id="3_vqoao"]
 
 [node name="Bathroom" type="Node2D"]
 
 [node name="Bathroom" type="Sprite2D" parent="."]
 position = Vector2(224, 224)
 texture = ExtResource("1_wqx55")
+
+[node name="Mochi" parent="." instance=ExtResource("2_kvr28")]
+position = Vector2(216, 336)
+
+[node name="Buttons" parent="." instance=ExtResource("3_vqoao")]
