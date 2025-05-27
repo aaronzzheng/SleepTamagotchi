@@ -4,7 +4,7 @@
 [ext_resource type="PackedScene" uid="uid://cs30wkhrsbi5h" path="res://Scenes/Blinking_start.tscn" id="2_1aie5"]
 [ext_resource type="PackedScene" uid="uid://dppqnvtgv0sv3" path="res://Scenes/Updown_star.tscn" id="3_dyaw8"]
 [ext_resource type="Texture2D" uid="uid://egin1mlu65s6" path="res://Assets/Scenes/Mainscreen/Button.png" id="4_gcwa6"]
-[ext_resource type="Script" path="res://Scenes/button.gd" id="6_hes7g"]
+[ext_resource type="Script" path="res://Scripts/button.gd" id="6_hes7g"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w68f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
