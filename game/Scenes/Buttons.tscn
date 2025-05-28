@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://cnxmkmur5cjvy"]
+[gd_scene load_steps=11 format=3 uid="uid://cj6p8p4jx6ara"]
 
 [ext_resource type="Script" path="res://Scripts/nav_buttons.gd" id="1_m5b3v"]
 [ext_resource type="Texture2D" uid="uid://c3qeep6hs4o12" path="res://Assets/Sprites/Triangle_button.png" id="2_un6uj"]

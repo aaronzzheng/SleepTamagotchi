@@ -1,9 +1,9 @@
-[gd_scene load_steps=12 format=3 uid="uid://bduqmjb8injnr"]
+[gd_scene load_steps=12 format=3 uid="uid://c8eb40yavgb4d"]
 
 [ext_resource type="Texture2D" uid="uid://dpimfn4pkyxq7" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_y21aj"]
 [ext_resource type="PackedScene" uid="uid://cs30wkhrsbi5h" path="res://Scenes/Blinking_start.tscn" id="2_ml2ga"]
 [ext_resource type="PackedScene" uid="uid://dppqnvtgv0sv3" path="res://Scenes/Updown_star.tscn" id="3_y6df2"]
-[ext_resource type="Script" path="res://Scenes/button.gd" id="4_5le5p"]
+[ext_resource type="Script" path="res://Scripts/button.gd" id="5_syd1k"]
 [ext_resource type="Texture2D" uid="uid://egin1mlu65s6" path="res://Assets/Scenes/Mainscreen/Button.png" id="5_ugwin"]
 [ext_resource type="Script" path="res://System/HealthLogger.gd" id="6_lrqmw"]
 
@@ -129,7 +129,7 @@ position = Vector2(88, 288)
 position = Vector2(392, 152)
 
 [node name="Button" type="Node2D" parent="."]
-script = ExtResource("4_5le5p")
+script = ExtResource("5_syd1k")
 
 [node name="Button_img" type="Sprite2D" parent="Button"]
 position = Vector2(224, 360)

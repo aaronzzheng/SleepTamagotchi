@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://bcsvcc4k6pasu" path="res://Assets/Scenes/Bathroom/Background.png" id="1_1j432"]
 [ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_kvr28"]
-[ext_resource type="PackedScene" path="res://Scenes/Buttons.tscn" id="3_vqoao"]
+[ext_resource type="PackedScene" uid="uid://cj6p8p4jx6ara" path="res://Scenes/Buttons.tscn" id="3_vqoao"]
 [ext_resource type="Texture2D" uid="uid://dnrikhom0ihub" path="res://Assets/Scenes/Bathroom/Soap.png" id="4_shj4f"]
 [ext_resource type="Texture2D" uid="uid://txnocufyt7yq" path="res://Assets/Scenes/Bathroom/Towel_hook.png" id="5_5s1gr"]
 
