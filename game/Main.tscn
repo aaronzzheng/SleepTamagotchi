@@ -1,0 +1,160 @@
+[gd_scene load_steps=12 format=3 uid="uid://bduqmjb8injnr"]
+
+[ext_resource type="Texture2D" uid="uid://dpimfn4pkyxq7" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_y21aj"]
+[ext_resource type="PackedScene" uid="uid://cs30wkhrsbi5h" path="res://Scenes/Blinking_start.tscn" id="2_ml2ga"]
+[ext_resource type="PackedScene" uid="uid://dppqnvtgv0sv3" path="res://Scenes/Updown_star.tscn" id="3_y6df2"]
+[ext_resource type="Script" path="res://Scenes/button.gd" id="4_5le5p"]
+[ext_resource type="Texture2D" uid="uid://egin1mlu65s6" path="res://Assets/Scenes/Mainscreen/Button.png" id="5_ugwin"]
+[ext_resource type="Script" path="res://System/HealthLogger.gd" id="6_lrqmw"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w68f"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqjdw"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tyon"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ervc1"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="GDScript" id="GDScript_lgo2o"]
+script/source = "# This script performs the main logic to setup the plugins
+# It also signs a user into their google fit account
+# and does some other simple tests like vibration and playing SFX and BGM
+extends Node
+
+# What mobile OS are supported
+var MobileOS: Array = [\"Android\", \"iOS\"]
+
+# The name of the android sensors plugin to load
+var SensorsPluginName: String = \"AndroidSensorsPlugin\"
+
+# The android sensors plugin to load
+var SensorsPlugin: JNISingleton = null
+
+# The name of the health connect plugin to load
+var HealthConnectPluginName: String = \"AndroidHealthConnectPlugin\"
+
+# The health connect plugin to load
+var HealthConnectPlugin: JNISingleton = null
+
+# Sensors available in the plugin
+var Sensors: Array = [
+	\"step\",
+	\"light\",
+	\"heart_rate\",
+	\"air_temperature\"
+]
+
+# Called when the node enters the scene tree for the first time
+func _ready() -> void:
+	# Play a startup sound effect to test audio output
+	#$SFX.play()
+
+	# Test the vibrate function on the watch, vibrate for 1 second
+	if OS.get_name() in MobileOS:
+		Input.vibrate_handheld(1000)
+		OS.request_permissions()	
+	
+		# Setup our android sensors plugin and check if it works
+		if Engine.has_singleton(SensorsPluginName):
+			# If it exists, store it in global SensorsPlugin variable
+			SensorsPlugin = Engine.get_singleton(SensorsPluginName)
+			print(\"Sensors plugin exists!\")
+			
+			# Test our toast function
+			SensorsPlugin.toast(\"Sensors plugin loaded!\")
+			
+			# Test our setup and tracking functions
+			SensorsPlugin.setupTracking()
+			SensorsPlugin.setupSensor(\"light\")
+			SensorsPlugin.connect(\"light_value_changed\", Callable(self, \"light_sensor_value_changed\"))
+			SensorsPlugin.startSensorTracking(\"light\")
+			if(SensorsPlugin.tracking()):
+				print(\"Sensors are tracking something!\")
+			else:
+				print(\"Sensors are not tracking anything...\")
+			
+			if(SensorsPlugin.isTracking(\"light\")):
+				print(\"Light sensor is being tracked!\")
+			else:
+				print(\"Light sensor is not being tracked...\")
+		else:
+			# Eddie to do: Handle error when the plugin doesn't properly load
+			printerr(\"Unable to load sensors plugin!\")
+			print(Engine.get_singleton_list())
+		
+		# Setup our android sensors plugin and check if it works
+		if Engine.has_singleton(HealthConnectPluginName):
+			# If it exists, store it in the global HealthConnectPlugin variable
+			HealthConnectPlugin = Engine.get_singleton(HealthConnectPluginName)
+			
+			# Test our toast function
+			SensorsPlugin.toast(\"Health Connect plugin loaded!\")
+
+# Called whenever there is a change to the light sensor value
+func light_sensor_value_changed(newValue):
+	print(\"Light sensor value changed:\", newValue)
+	SensorsPlugin.stopAllSensorTracking()
+"
+
+[node name="Game" type="Node2D"]
+
+[node name="MainScreen" type="Sprite2D" parent="."]
+position = Vector2(224, 224)
+texture = ExtResource("1_y21aj")
+
+[node name="Blinking_stars" type="Node2D" parent="."]
+position = Vector2(96, 96)
+
+[node name="Blinking_star_0" parent="Blinking_stars" instance=ExtResource("2_ml2ga")]
+
+[node name="Blinking_star_1" parent="Blinking_stars" instance=ExtResource("2_ml2ga")]
+position = Vector2(32, 56)
+
+[node name="Blinking_star_2" parent="Blinking_stars" instance=ExtResource("2_ml2ga")]
+position = Vector2(272, 96)
+
+[node name="Blinking_star_3" parent="Blinking_stars" instance=ExtResource("2_ml2ga")]
+position = Vector2(-24, 232)
+
+[node name="Updown_stars" type="Node2D" parent="."]
+
+[node name="Updown_star_0" parent="Updown_stars" instance=ExtResource("3_y6df2")]
+position = Vector2(88, 288)
+
+[node name="Updown_star_1" parent="Updown_stars" instance=ExtResource("3_y6df2")]
+position = Vector2(392, 152)
+
+[node name="Button" type="Node2D" parent="."]
+script = ExtResource("4_5le5p")
+
+[node name="Button_img" type="Sprite2D" parent="Button"]
+position = Vector2(224, 360)
+texture = ExtResource("5_ugwin")
+
+[node name="Button" type="Button" parent="Button"]
+offset_left = 128.0
+offset_top = 328.0
+offset_right = 320.0
+offset_bottom = 392.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_lqjdw")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6tyon")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ervc1")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2w68f")
+text = "Start"
+
+[node name="PluginManager" type="Node" parent="."]
+script = SubResource("GDScript_lgo2o")
+
+[node name="HealthLogger" type="Node" parent="."]
+script = ExtResource("6_lrqmw")
+
+[connection signal="pressed" from="Button/Button" to="Button" method="_on_button_pressed"]

@@ -1,8 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://blwi8eu3kpyu2"]
+[gd_scene load_steps=3 format=3 uid="uid://blwi8eu3kpyu2"]
 
 [ext_resource type="Texture2D" uid="uid://bvaujvs6he2vg" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
 [ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_4bhxk"]
-[ext_resource type="PackedScene" path="res://Scenes/Buttons.tscn" id="5_e8oy3"]
 
 [node name="Node2D" type="Node2D"]
 
@@ -12,5 +11,3 @@ texture = ExtResource("1_hvgi1")
 
 [node name="Sprite2D" parent="." instance=ExtResource("2_4bhxk")]
 position = Vector2(216, 336)
-
-[node name="Buttons" parent="." instance=ExtResource("5_e8oy3")]
