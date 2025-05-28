@@ -1,9 +1,9 @@
 [gd_scene load_steps=12 format=3 uid="uid://bduqmjb8injnr"]
 
-[ext_resource type="Texture2D" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_bl82k"]
+[ext_resource type="Texture2D" uid="uid://dpimfn4pkyxq7" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_bl82k"]
 [ext_resource type="PackedScene" uid="uid://nuacn1onti23" path="res://Scenes/Blinking_start.tscn" id="2_1aie5"]
-[ext_resource type="PackedScene" path="res://Scenes/Updown_star.tscn" id="3_dyaw8"]
-[ext_resource type="Texture2D" path="res://Assets/Scenes/Mainscreen/Button.png" id="4_gcwa6"]
+[ext_resource type="PackedScene" uid="uid://dppqnvtgv0sv3" path="res://Scenes/Updown_star.tscn" id="3_dyaw8"]
+[ext_resource type="Texture2D" uid="uid://egin1mlu65s6" path="res://Assets/Scenes/Mainscreen/Button.png" id="4_gcwa6"]
 [ext_resource type="PackedScene" uid="uid://q2saoxvm0287" path="res://Scenes/UI/BarUI.tscn" id="5_2pywh"]
 [ext_resource type="Script" path="res://Scenes/button.gd" id="6_hes7g"]
 [ext_resource type="PackedScene" uid="uid://xxqt05uvmqdb" path="res://Scenes/UI/MenuUI.tscn" id="6_wn2br"]

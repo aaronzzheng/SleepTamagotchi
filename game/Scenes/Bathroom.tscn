@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://1qqt5btod680"]
 
-[ext_resource type="Texture2D" path="res://Assets/Scenes/Bathroom/Bathroom.png" id="1_wqx55"]
+[ext_resource type="Texture2D" uid="uid://m84qrbcprpcm" path="res://Assets/Scenes/Bathroom/Bathroom.png" id="1_wqx55"]
 
 [node name="Bathroom" type="Node2D"]
 

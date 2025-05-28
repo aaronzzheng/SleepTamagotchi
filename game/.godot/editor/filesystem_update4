@@ -1,11 +1,8 @@
-res://Scenes/Characters/PenguinEvo.tscn
-res://peng_evo_1.gd
 res://Scenes/Main.tscn
 res://Scenes/UI/MenuUI.tscn
 res://Scenes/Bathroom.tscn
 res://Scenes/Blinking_start.tscn
 res://Scenes/UI/BarUI.tscn
 res://Scenes/mochi.tscn
+res://Scenes/Characters/PenguinEvo.tscn
 res://Scenes/Bedroom.tscn
-res://Scenes/UI/health_bar_ui.gd
-res://Scenes/UI/main_menu.gd

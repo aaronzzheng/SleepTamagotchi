@@ -1,6 +1,6 @@
 [gd_scene load_steps=5 format=3 uid="uid://blwi8eu3kpyu2"]
 
-[ext_resource type="Texture2D" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
+[ext_resource type="Texture2D" uid="uid://bvaujvs6he2vg" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
 [ext_resource type="PackedScene" uid="uid://ye7w2x8mg5pf" path="res://Scenes/Characters/PenguinEvo.tscn" id="1_iafe1"]
 [ext_resource type="PackedScene" uid="uid://bsprbljmpsk1j" path="res://Scenes/mochi.tscn" id="2_4bhxk"]
 
