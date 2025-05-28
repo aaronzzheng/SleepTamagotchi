@@ -1,0 +1,90 @@
+[gd_scene load_steps=12 format=3 uid="uid://bduqmjb8injnr"]
+
+[ext_resource type="Texture2D" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_bl82k"]
+[ext_resource type="PackedScene" uid="uid://nuacn1onti23" path="res://Scenes/Blinking_start.tscn" id="2_1aie5"]
+[ext_resource type="PackedScene" path="res://Scenes/Updown_star.tscn" id="3_dyaw8"]
+[ext_resource type="Texture2D" path="res://Assets/Scenes/Mainscreen/Button.png" id="4_gcwa6"]
+[ext_resource type="PackedScene" uid="uid://q2saoxvm0287" path="res://Scenes/UI/BarUI.tscn" id="5_2pywh"]
+[ext_resource type="Script" path="res://Scenes/button.gd" id="6_hes7g"]
+[ext_resource type="PackedScene" uid="uid://xxqt05uvmqdb" path="res://Scenes/UI/MenuUI.tscn" id="6_wn2br"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w68f"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lqjdw"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_6tyon"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ervc1"]
+bg_color = Color(0.6, 0.6, 0.6, 0)
+
+[node name="mainMenu" type="Node2D"]
+
+[node name="mainMenuBG" type="Sprite2D" parent="."]
+position = Vector2(224, 224)
+texture = ExtResource("1_bl82k")
+
+[node name="Blinking_stars" type="Node2D" parent="."]
+position = Vector2(96, 96)
+
+[node name="Blinking_star_0" parent="Blinking_stars" instance=ExtResource("2_1aie5")]
+
+[node name="Blinking_star_1" parent="Blinking_stars" instance=ExtResource("2_1aie5")]
+position = Vector2(32, 56)
+
+[node name="Blinking_star_2" parent="Blinking_stars" instance=ExtResource("2_1aie5")]
+position = Vector2(272, 96)
+
+[node name="Blinking_star_3" parent="Blinking_stars" instance=ExtResource("2_1aie5")]
+position = Vector2(-24, 232)
+
+[node name="Updown_stars" type="Node2D" parent="."]
+
+[node name="Updown_star_0" parent="Updown_stars" instance=ExtResource("3_dyaw8")]
+position = Vector2(88, 288)
+
+[node name="Updown_star_1" parent="Updown_stars" instance=ExtResource("3_dyaw8")]
+position = Vector2(392, 152)
+
+[node name="BarUI" parent="." instance=ExtResource("5_2pywh")]
+custom_minimum_size = Vector2(450, 450)
+offset_right = 450.0
+offset_bottom = 450.0
+
+[node name="GameUI" parent="." instance=ExtResource("6_wn2br")]
+custom_minimum_size = Vector2(450, 450)
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 450.0
+offset_bottom = 450.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Button" type="Node2D" parent="."]
+visible = false
+script = ExtResource("6_hes7g")
+
+[node name="Button_img" type="Sprite2D" parent="Button"]
+position = Vector2(224, 360)
+texture = ExtResource("4_gcwa6")
+
+[node name="Button" type="Button" parent="Button"]
+offset_left = 128.0
+offset_top = 328.0
+offset_right = 320.0
+offset_bottom = 392.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 40
+theme_override_styles/focus = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/hover_pressed = SubResource("StyleBoxFlat_lqjdw")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/hover = SubResource("StyleBoxFlat_6tyon")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_2w68f")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_ervc1")
+theme_override_styles/normal = SubResource("StyleBoxFlat_2w68f")
+text = "Start"
+
+[connection signal="pressed" from="Button/Button" to="Button" method="_on_button_pressed"]
