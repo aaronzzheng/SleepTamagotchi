@@ -58,3 +58,6 @@ func _on_setting_button_pressed() -> void:
 func _on_setting_close_button_pressed() -> void:
 	toggle_visibility(setting_menu_screen)
 	toggle_visibility(main_menu_screen)
+
+func _on_quit_button_pressed() -> void:
+	get_tree().quit()

@@ -119,4 +119,5 @@ patch_margin_bottom = 10
 
 [connection signal="pressed" from="mainMenu/menuContainer/VBoxContainer/startButton" to="mainMenu" method="_on_start_button_pressed"]
 [connection signal="pressed" from="mainMenu/menuContainer/VBoxContainer/settingButton" to="mainMenu" method="_on_setting_button_pressed"]
+[connection signal="pressed" from="mainMenu/menuContainer/VBoxContainer/quitButton" to="mainMenu" method="_on_quit_button_pressed"]
 [connection signal="pressed" from="mainMenu/settingsContainer/VBoxContainer/settingCloseButton" to="mainMenu" method="_on_setting_close_button_pressed"]
