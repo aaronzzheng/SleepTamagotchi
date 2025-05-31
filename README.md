@@ -1,3 +1,8 @@
+![Contributors](https://img.shields.io/badge/contributor-Heden-mediumseagreen)
+![Contributors](https://img.shields.io/badge/contributor-Aaron-orange)
+![Contributors](https://img.shields.io/badge/contributor-Pana-pink)
+[![License](https://img.shields.io/badge/license-Apache-orchid)](./LICENSE)
+
 # SleepTamagochi
 Collaborative project to create a gamified sleep health app. Prototypes are created in Godot (https://godotengine.org/).
 
