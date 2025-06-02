@@ -8,3 +8,4 @@ res://Scenes/Characters/PenguinEvo.tscn
 res://Scenes/Bedroom.tscn
 res://Scenes/UI/MenuUI.tscn
 res://Scenes/UI/in_game_menu_ui.gd
+res://peng_evo_1.gd

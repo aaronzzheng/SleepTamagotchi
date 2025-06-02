@@ -2,28 +2,31 @@ extends CharacterBody2D
 
 var evo: int = 0
 
-const SPEED = 100.0
-const JUMP_VELOCITY = -250.0
+const SPEED = 50.0
+
+var move: bool = true
+
+var dirArray: Array[int] = [-1, 0, 1]
+var timeArray: Array[float] = [0.5, 1.0, 1.5, 2.0]
+var direction: int = 0
+var time: float = 1
 
 @export var peng_1: AnimatedSprite2D
 
 @onready var animated_sprite = $AnimatedSprite2D
 
-func _physics_process(delta: float) -> void:
-	# Add the gravity.
-	if not is_on_floor():
-		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
-
-	# Get the input direction and handle the movement/deceleration.
-	# As good practice, you should replace UI actions with custom gameplay actions.
-	var direction := Input.get_axis("move_left", "move_right")
+func _physics_process(delta) -> void:
+	
+	time -= delta
+	
+	if time <= 0:
+		direction = dirArray.pick_random()
+		time = timeArray.pick_random()
+		print(time)
+		print(direction)
 	
 	if direction > 0:
-		animated_sprite.flip_h = true
+			animated_sprite.flip_h = true
 	elif direction < 0:
 		animated_sprite.flip_h = false
 	
@@ -66,4 +69,6 @@ func _input(event):
 			evo += 1
 		else:
 			evo = 0
-		
+
+func wait(seconds: float) -> void:
+	await get_tree().create_timer(seconds).timeout
