@@ -10,10 +10,11 @@ config_version=5
 
 [application]
 
-config/name="Game"
+config/name="Sleep Tamagotchi"
 run/main_scene="res://Scenes/Main.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
-config/icon="res://icon.svg"
+boot_splash/image="res://bootsplash.png"
+config/icon="res://newicon.png"
 
 [autoload]
 

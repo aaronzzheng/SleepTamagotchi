@@ -1,13 +1,17 @@
 [gd_scene load_steps=11 format=3 uid="uid://bnmfcap87r7pr"]
 
-[ext_resource type="Script" path="res://Scenes/UI/setting_button.gd" id="1_4c54s"]
+[ext_resource type="Script" path="res://Scenes/UI/in_game_menu_ui.gd" id="1_hjwlo"]
 [ext_resource type="Texture2D" uid="uid://crbvcl44y1qbd" path="res://Assets/UI/InGameMenu/OpenCloseInGameMenu.png" id="2_iyh0f"]
 [ext_resource type="Texture2D" uid="uid://dojss1bhfy4o3" path="res://Assets/UI/InGameMenu/InGameMenuBG.png" id="3_40afx"]
 [ext_resource type="Texture2D" uid="uid://dtp8s48oaovqj" path="res://Assets/UI/InGameMenu/InGameMenuButtons.png" id="4_h3mqm"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8bepe"]
 texture = ExtResource("2_iyh0f")
-region_rect = Rect2(0, 0, 199, 99)
+region_rect = Rect2(33, 0, 133, 50)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eqj1w"]
+texture = ExtResource("2_iyh0f")
+region_rect = Rect2(33, 50, 133, 50)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cjqgv"]
 texture = ExtResource("4_h3mqm")
@@ -25,42 +29,48 @@ region_rect = Rect2(300, 0, 99, 99)
 texture = ExtResource("4_h3mqm")
 region_rect = Rect2(0, 0, 99, 99)
 
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eqj1w"]
-texture = ExtResource("2_iyh0f")
-region_rect = Rect2(0, 100, 199, 99)
-
-[node name="InGameMenu" type="Control"]
+[node name="InGameMenu" type="Control" node_paths=PackedStringArray("in_game_button", "in_game_menu", "open_button", "close_button", "setting_button", "shop_button", "stat_button", "exit_button")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+script = ExtResource("1_hjwlo")
+in_game_button = NodePath("inGameMenuButtonContainer")
+in_game_menu = NodePath("inGameMenu")
+open_button = NodePath("inGameMenuButtonContainer/MarginContainer2/openButton")
+close_button = NodePath("inGameMenu/MarginContainer/NinePatchRect/MarginContainer2/closeButton")
+setting_button = NodePath("inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer/settingsButton")
+shop_button = NodePath("inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer/shopButton")
+stat_button = NodePath("inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer2/statButton")
+exit_button = NodePath("inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer2/exitButton")
 
-[node name="inGameMenuButtonContainer" type="MarginContainer" parent="." node_paths=PackedStringArray("in_game_button", "in_game_menu", "open_button", "close_button", "setting_button", "shop_button", "stat_button", "exit_button")]
+[node name="inGameMenuButtonContainer" type="MarginContainer" parent="."]
 custom_minimum_size = Vector2(450, 450)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_4c54s")
-in_game_button = NodePath(".")
-in_game_menu = NodePath("../inGameMenu")
-open_button = NodePath("MarginContainer2/openButton")
-close_button = NodePath("../inGameMenu/MarginContainer2/closeButton")
-setting_button = NodePath("../inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer/settingsButton")
-shop_button = NodePath("../inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer/shopButton")
-stat_button = NodePath("../inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer2/statButton")
-exit_button = NodePath("../inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer2/exitButton")
 
 [node name="MarginContainer2" type="MarginContainer" parent="inGameMenuButtonContainer"]
 layout_mode = 2
-theme_override_constants/margin_bottom = 325
+theme_override_constants/margin_bottom = 400
 
 [node name="openButton" type="Button" parent="inGameMenuButtonContainer/MarginContainer2"]
-custom_minimum_size = Vector2(200, 100)
+custom_minimum_size = Vector2(100, 50)
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
+theme_override_styles/focus = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/hover = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_8bepe")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxTexture_8bepe")
 theme_override_styles/normal = SubResource("StyleBoxTexture_8bepe")
 
 [node name="inGameMenu" type="MarginContainer" parent="."]
@@ -84,6 +94,33 @@ patch_margin_left = 5
 patch_margin_top = 5
 patch_margin_right = 5
 patch_margin_bottom = 5
+
+[node name="MarginContainer2" type="MarginContainer" parent="inGameMenu/MarginContainer/NinePatchRect"]
+layout_mode = 2
+offset_left = 100.0
+offset_top = -25.0
+offset_right = 200.0
+offset_bottom = 325.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/margin_bottom = 300
+
+[node name="closeButton" type="Button" parent="inGameMenu/MarginContainer/NinePatchRect/MarginContainer2"]
+custom_minimum_size = Vector2(100, 50)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_styles/focus = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/disabled_mirrored = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/disabled = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/hover_pressed_mirrored = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/hover_pressed = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/hover_mirrored = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/hover = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/pressed_mirrored = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/normal_mirrored = SubResource("StyleBoxTexture_eqj1w")
+theme_override_styles/normal = SubResource("StyleBoxTexture_eqj1w")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="inGameMenu/MarginContainer/NinePatchRect"]
 layout_mode = 1
@@ -125,16 +162,6 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxTexture_b6req")
 
-[node name="MarginContainer2" type="MarginContainer" parent="inGameMenu"]
-layout_mode = 2
-theme_override_constants/margin_bottom = 325
-
-[node name="closeButton" type="Button" parent="inGameMenu/MarginContainer2"]
-custom_minimum_size = Vector2(200, 100)
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-theme_override_styles/normal = SubResource("StyleBoxTexture_eqj1w")
-
-[connection signal="pressed" from="inGameMenuButtonContainer/MarginContainer2/openButton" to="inGameMenuButtonContainer" method="_on_open_button_pressed"]
-[connection signal="pressed" from="inGameMenu/MarginContainer2/closeButton" to="inGameMenuButtonContainer" method="_on_close_button_pressed"]
+[connection signal="pressed" from="inGameMenuButtonContainer/MarginContainer2/openButton" to="." method="_on_open_button_pressed"]
+[connection signal="pressed" from="inGameMenu/MarginContainer/NinePatchRect/MarginContainer2/closeButton" to="." method="_on_close_button_pressed"]
+[connection signal="pressed" from="inGameMenu/MarginContainer/NinePatchRect/VBoxContainer/HBoxContainer2/exitButton" to="." method="_on_exit_button_pressed"]

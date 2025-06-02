@@ -1,13 +1,10 @@
+res://Scenes/UI/InGameMenuUI.tscn
 res://Scenes/Main.tscn
-res://Scenes/UI/MenuUI.tscn
 res://Scenes/Bathroom.tscn
 res://Scenes/Blinking_start.tscn
 res://Scenes/UI/BarUI.tscn
 res://Scenes/mochi.tscn
 res://Scenes/Characters/PenguinEvo.tscn
 res://Scenes/Bedroom.tscn
-res://Scenes/UI/in_game_setting.tscn
-res://Scenes/UI/setting_button.gd
-res://Scenes/UI/InGameMenuUI.tscn
-res://stats.gd
-res://Scenes/UI/bar_ui.gd
+res://Scenes/UI/MenuUI.tscn
+res://Scenes/UI/in_game_menu_ui.gd
