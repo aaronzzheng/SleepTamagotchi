@@ -1,10 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://bduqmjb8injnr"]
+[gd_scene load_steps=13 format=3 uid="uid://bduqmjb8injnr"]
 
 [ext_resource type="Texture2D" uid="uid://dpimfn4pkyxq7" path="res://Assets/Scenes/Mainscreen/Main_screen.png" id="1_bl82k"]
-[ext_resource type="PackedScene" uid="uid://cs30wkhrsbi5h" path="res://Scenes/Blinking_start.tscn" id="2_1aie5"]
+[ext_resource type="PackedScene" uid="uid://nuacn1onti23" path="res://Scenes/Blinking_start.tscn" id="2_1aie5"]
 [ext_resource type="PackedScene" uid="uid://dppqnvtgv0sv3" path="res://Scenes/Updown_star.tscn" id="3_dyaw8"]
 [ext_resource type="Texture2D" uid="uid://egin1mlu65s6" path="res://Assets/Scenes/Mainscreen/Button.png" id="4_gcwa6"]
-[ext_resource type="Script" path="res://Scripts/button.gd" id="6_hes7g"]
+[ext_resource type="PackedScene" uid="uid://q2saoxvm0287" path="res://Scenes/UI/BarUI.tscn" id="5_2pywh"]
+[ext_resource type="Script" path="res://Scenes/button.gd" id="6_hes7g"]
+[ext_resource type="PackedScene" uid="uid://xxqt05uvmqdb" path="res://Scenes/UI/MenuUI.tscn" id="6_wn2br"]
+[ext_resource type="Script" path="res://Scripts/HealthLogger.gd" id="8_g3kp6"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_2w68f"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -18,9 +21,9 @@ bg_color = Color(0.6, 0.6, 0.6, 0)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ervc1"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
 
-[node name="Game" type="Node2D"]
+[node name="mainMenu" type="Node2D"]
 
-[node name="MainScreen" type="Sprite2D" parent="."]
+[node name="mainMenuBG" type="Sprite2D" parent="."]
 position = Vector2(224, 224)
 texture = ExtResource("1_bl82k")
 
@@ -46,7 +49,23 @@ position = Vector2(88, 288)
 [node name="Updown_star_1" parent="Updown_stars" instance=ExtResource("3_dyaw8")]
 position = Vector2(392, 152)
 
+[node name="BarUI" parent="." instance=ExtResource("5_2pywh")]
+custom_minimum_size = Vector2(450, 450)
+offset_right = 450.0
+offset_bottom = 450.0
+
+[node name="GameUI" parent="." instance=ExtResource("6_wn2br")]
+custom_minimum_size = Vector2(450, 450)
+anchors_preset = 0
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 450.0
+offset_bottom = 450.0
+grow_horizontal = 1
+grow_vertical = 1
+
 [node name="Button" type="Node2D" parent="."]
+visible = false
 script = ExtResource("6_hes7g")
 
 [node name="Button_img" type="Sprite2D" parent="Button"]
@@ -68,5 +87,13 @@ theme_override_styles/pressed_mirrored = SubResource("StyleBoxFlat_2w68f")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_ervc1")
 theme_override_styles/normal = SubResource("StyleBoxFlat_2w68f")
 text = "Start"
+
+[node name="HealthLogger" type="Node" parent="."]
+script = ExtResource("8_g3kp6")
+
+[node name="LogTimer" type="Timer" parent="HealthLogger"]
+wait_time = 5.0
+
+[node name="PluginManager" type="Node" parent="."]
 
 [connection signal="pressed" from="Button/Button" to="Button" method="_on_button_pressed"]

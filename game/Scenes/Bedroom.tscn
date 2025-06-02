@@ -1,7 +1,11 @@
-[gd_scene load_steps=3 format=3 uid="uid://blwi8eu3kpyu2"]
+[gd_scene load_steps=5 format=3 uid="uid://blwi8eu3kpyu2"]
 
 [ext_resource type="Texture2D" uid="uid://bvaujvs6he2vg" path="res://Assets/Scenes/Bedroom/Bedroom_full.png" id="1_hvgi1"]
-[ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_4bhxk"]
+[ext_resource type="PackedScene" uid="uid://ye7w2x8mg5pf" path="res://Scenes/Characters/PenguinEvo.tscn" id="1_iafe1"]
+[ext_resource type="PackedScene" uid="uid://bnmfcap87r7pr" path="res://Scenes/UI/InGameMenuUI.tscn" id="4_q4k8c"]
+
+[sub_resource type="WorldBoundaryShape2D" id="WorldBoundaryShape2D_qypes"]
+distance = -381.0
 
 [node name="Node2D" type="Node2D"]
 
@@ -9,5 +13,13 @@
 position = Vector2(224, 224)
 texture = ExtResource("1_hvgi1")
 
-[node name="Sprite2D" parent="." instance=ExtResource("2_4bhxk")]
-position = Vector2(216, 336)
+[node name="Penguin" parent="." instance=ExtResource("1_iafe1")]
+position = Vector2(218.26, 336)
+scale = Vector2(2, 2)
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+shape = SubResource("WorldBoundaryShape2D_qypes")
+
+[node name="InGameMenu" parent="." instance=ExtResource("4_q4k8c")]

@@ -1,26 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bmv4pqu87ooxp"]
+[gd_scene load_steps=2 format=3 uid="uid://1qqt5btod680"]
 
-[ext_resource type="Texture2D" uid="uid://bcsvcc4k6pasu" path="res://Assets/Scenes/Bathroom/Background.png" id="1_1j432"]
-[ext_resource type="PackedScene" uid="uid://dubgpeic2sfn1" path="res://Scenes/mochi.tscn" id="2_kvr28"]
-[ext_resource type="PackedScene" uid="uid://cj6p8p4jx6ara" path="res://Scenes/Buttons.tscn" id="3_vqoao"]
-[ext_resource type="Texture2D" uid="uid://dnrikhom0ihub" path="res://Assets/Scenes/Bathroom/Soap.png" id="4_shj4f"]
-[ext_resource type="Texture2D" uid="uid://txnocufyt7yq" path="res://Assets/Scenes/Bathroom/Towel_hook.png" id="5_5s1gr"]
+[ext_resource type="Texture2D" uid="uid://m84qrbcprpcm" path="res://Assets/Scenes/Bathroom/Bathroom.png" id="1_wqx55"]
 
 [node name="Bathroom" type="Node2D"]
 
-[node name="Background" type="Sprite2D" parent="."]
-position = Vector2(225, 225)
-texture = ExtResource("1_1j432")
-
-[node name="Mochi" parent="." instance=ExtResource("2_kvr28")]
-position = Vector2(216, 336)
-
-[node name="Buttons" parent="." instance=ExtResource("3_vqoao")]
-
-[node name="TowelHook" type="Sprite2D" parent="."]
-position = Vector2(128, 162)
-texture = ExtResource("5_5s1gr")
-
-[node name="Soap" type="Sprite2D" parent="."]
-position = Vector2(349, 247)
-texture = ExtResource("4_shj4f")
+[node name="Bathroom" type="Sprite2D" parent="."]
+position = Vector2(224, 224)
+texture = ExtResource("1_wqx55")

@@ -1,7 +1,7 @@
-[gd_scene load_steps=10 format=3 uid="uid://dubgpeic2sfn1"]
+[gd_scene load_steps=10 format=3 uid="uid://bsprbljmpsk1j"]
 
 [ext_resource type="Texture2D" uid="uid://dihqwkniyjjum" path="res://Assets/Sprites/pet123-imageonline.co-merged.png" id="1_15e5a"]
-[ext_resource type="Script" path="res://Scripts/mochi_click.gd" id="1_jk2d2"]
+[ext_resource type="Script" path="res://Scenes/mochi.gd" id="2_3ixjt"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_f28wb"]
 atlas = ExtResource("1_15e5a")
@@ -50,30 +50,19 @@ animations = [{
 radius = 39.999
 height = 111.085
 
-[node name="Mochi" type="CharacterBody2D"]
-script = ExtResource("1_jk2d2")
-
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D"]
 sprite_frames = SubResource("SpriteFrames_i3nk2")
 autoplay = "default"
 frame_progress = 0.37616
+script = ExtResource("2_3ixjt")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(0, 16)
 rotation = -1.56382
 shape = SubResource("CapsuleShape2D_om886")
 
-[node name="RayCastLeft" type="RayCast2D" parent="."]
-target_position = Vector2(-56, 0)
-
 [node name="RayCastRight" type="RayCast2D" parent="."]
 target_position = Vector2(64, 0)
 
-[node name="Area2D" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(0, 16)
-rotation = -1.56381
-shape = SubResource("CapsuleShape2D_om886")
-
-[connection signal="input_event" from="Area2D" to="." method="_on_area_2d_input_event"]
+[node name="RayCastLeft" type="RayCast2D" parent="."]
+target_position = Vector2(-56, 0)
