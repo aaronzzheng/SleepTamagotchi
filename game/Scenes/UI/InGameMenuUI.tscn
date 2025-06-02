@@ -1,32 +1,32 @@
-[gd_scene load_steps=11 format=3 uid="uid://b0cwpas4vd55v"]
+[gd_scene load_steps=11 format=3 uid="uid://bnmfcap87r7pr"]
 
-[ext_resource type="Script" path="res://Scenes/UI/setting_button.gd" id="1_wt8nh"]
-[ext_resource type="Texture2D" uid="uid://crbvcl44y1qbd" path="res://Assets/UI/InGameMenu/OpenCloseInGameMenu.png" id="2_5twsx"]
-[ext_resource type="Texture2D" uid="uid://dojss1bhfy4o3" path="res://Assets/UI/InGameMenu/InGameMenuBG.png" id="2_ngv3i"]
-[ext_resource type="Texture2D" uid="uid://dtp8s48oaovqj" path="res://Assets/UI/InGameMenu/InGameMenuButtons.png" id="3_edkee"]
+[ext_resource type="Script" path="res://Scenes/UI/setting_button.gd" id="1_4c54s"]
+[ext_resource type="Texture2D" uid="uid://crbvcl44y1qbd" path="res://Assets/UI/InGameMenu/OpenCloseInGameMenu.png" id="2_iyh0f"]
+[ext_resource type="Texture2D" uid="uid://dojss1bhfy4o3" path="res://Assets/UI/InGameMenu/InGameMenuBG.png" id="3_40afx"]
+[ext_resource type="Texture2D" uid="uid://dtp8s48oaovqj" path="res://Assets/UI/InGameMenu/InGameMenuButtons.png" id="4_h3mqm"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_8bepe"]
-texture = ExtResource("2_5twsx")
+texture = ExtResource("2_iyh0f")
 region_rect = Rect2(0, 0, 199, 99)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cjqgv"]
-texture = ExtResource("3_edkee")
+texture = ExtResource("4_h3mqm")
 region_rect = Rect2(200, 0, 99, 99)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_a44me"]
-texture = ExtResource("3_edkee")
+texture = ExtResource("4_h3mqm")
 region_rect = Rect2(100, 0, 99, 99)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jofur"]
-texture = ExtResource("3_edkee")
+texture = ExtResource("4_h3mqm")
 region_rect = Rect2(300, 0, 99, 99)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_b6req"]
-texture = ExtResource("3_edkee")
+texture = ExtResource("4_h3mqm")
 region_rect = Rect2(0, 0, 99, 99)
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_eqj1w"]
-texture = ExtResource("2_5twsx")
+texture = ExtResource("2_iyh0f")
 region_rect = Rect2(0, 100, 199, 99)
 
 [node name="InGameMenu" type="Control"]
@@ -42,7 +42,7 @@ custom_minimum_size = Vector2(450, 450)
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
-script = ExtResource("1_wt8nh")
+script = ExtResource("1_4c54s")
 in_game_button = NodePath(".")
 in_game_menu = NodePath("../inGameMenu")
 open_button = NodePath("MarginContainer2/openButton")
@@ -78,7 +78,7 @@ size_flags_vertical = 4
 
 [node name="NinePatchRect" type="NinePatchRect" parent="inGameMenu/MarginContainer"]
 layout_mode = 2
-texture = ExtResource("2_ngv3i")
+texture = ExtResource("3_40afx")
 region_rect = Rect2(0, 0, 99, 99)
 patch_margin_left = 5
 patch_margin_top = 5

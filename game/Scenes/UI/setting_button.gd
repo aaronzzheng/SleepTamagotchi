@@ -1,23 +1,25 @@
 extends MarginContainer
 
 # Export screens
-@export var in_game_button: VBoxContainer
+@export var in_game_button: MarginContainer
 @export var in_game_menu: MarginContainer
 
-# Export main menu buttons
-@export var in_game_button_open: Button
-
-# Export settings UI
-@export var close_setting_button: Button
+# Export menu buttons
+@export var open_button: Button
+@export var close_button: Button
+@export var setting_button: Button
+@export var shop_button: Button
+@export var stat_button: Button
+@export var exit_button: Button
 
 # Declare button arrays
-var main_buttons: Array
-var setting_buttons: Array
+var open_close_buttons: Array
+var menu_buttons: Array
 
 # Function performed at beginning
 func _ready():
-	main_buttons = [in_game_button_open]
-	setting_buttons = [close_setting_button]
+	open_close_buttons = [open_button, close_button]
+	menu_buttons = [setting_button, shop_button, stat_button, exit_button]
 
 # Function performed per frame
 func _process(_delta):
@@ -25,9 +27,9 @@ func _process(_delta):
 
 # Animating buttons
 func update_button_scale():
-	for button in main_buttons:
+	for button in open_close_buttons:
 		button_hov(button, 1.25, 0.2)
-	for button in setting_buttons:
+	for button in menu_buttons:
 		button_hov(button, 1.25, 0.2)
 
 func button_hov(button: Button, tweenSize, time):
@@ -46,3 +48,10 @@ func toggle_visibility(object):
 	object.visible = !object.visible
 
 # Click control
+func _on_open_button_pressed() -> void:
+	toggle_visibility(in_game_button)
+	toggle_visibility(in_game_menu)
+
+func _on_close_button_pressed() -> void:
+	toggle_visibility(in_game_button)
+	toggle_visibility(in_game_menu)
