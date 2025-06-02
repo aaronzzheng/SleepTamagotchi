@@ -1,4 +1,4 @@
-![Contributors](https://img.shields.io/badge/contributor-Heden-mediumseagreen)
+![Contributors](https://img.shields.io/badge/contributor-Hayden-mediumseagreen)
 ![Contributors](https://img.shields.io/badge/contributor-Aaron-orange)
 ![Contributors](https://img.shields.io/badge/contributor-Pana-pink)
 [![License](https://img.shields.io/badge/license-MIT-green)](./LICENSE)
