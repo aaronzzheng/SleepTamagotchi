@@ -1,3 +1,21 @@
+> This repository reflects how far I got on Sleep Tamagotchi during my summer internship (May 2025 to Aug 2025) at Kyoto University of Advanced Sciences.
+
+## Internship Project Summary (Resume-Aligned)
+**Kyoto University of Advanced Sciences - Mobile Software Engineer Intern**  
+**Kyoto, Japan | May 2025 to Aug 2025**  
+**Tech stack:** GDScript, Java, Android SDK, JSON, Git, GitHub, Wear OS
+
+- Spearheaded Sleep Tamagotchi, a Wear OS virtual pet app in Godot focused on improving student sleep habits through interactive pet mechanics and feedback loops for 500+ students.
+- Built and integrated Android sensor and Health Connect plugin workflows (step count, light exposure, heart rate), including runtime permission handling, signal-based data updates, and periodic logging to JSON.
+- Implemented a modular game architecture with reusable scenes and scripts for pet behavior, scene navigation, and UI systems (main menu, in-game menu, health/food bar components).
+- Created the full visual presentation of the prototype, including character/environment sprites, animation states, scene compositions, and most in-game UI graphics.
+- Developed real-time state wiring through global data/autoload patterns and bar updates tied to gameplay stats (`Stats.health`, `Stats.food`) for responsive in-game feedback.
+- Produced Wear OS-focused build and deployment workflows: Android export configuration, emulator/device debugging, and plugin build/use instructions.
+- Led collaborative development with Git/GitHub practices, incremental feature delivery, and iterative testing across emulator and watch deployment targets.
+
+## Repo Details
+This repo currently contains the Godot prototype and project infrastructure (scenes, scripts, assets, Android export settings, and deployment docs). Historical sensor/plugin implementation work is preserved in the repository history (for example the `Sensor-Data` branch lineage merged into `main` history).
+
 ![Contributors](https://img.shields.io/badge/contributor-Hayden-mediumseagreen)
 ![Contributors](https://img.shields.io/badge/contributor-Aaron-orange)
 ![Contributors](https://img.shields.io/badge/contributor-Pana-pink)
