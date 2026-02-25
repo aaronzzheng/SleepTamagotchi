@@ -1,6 +1,6 @@
 > This repository reflects how far I got on Sleep Tamagotchi during my summer internship (May 2025 to Aug 2025) at Kyoto University of Advanced Sciences.
 
-## Internship Project Summary (Resume-Aligned)
+## Internship Project Summary
 **Kyoto University of Advanced Sciences - Mobile Software Engineer Intern**  
 **Kyoto, Japan | May 2025 to Aug 2025**  
 **Tech stack:** GDScript, Java, Android SDK, JSON, Git, GitHub, Wear OS
