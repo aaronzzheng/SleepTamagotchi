@@ -3,6 +3,7 @@ extends CharacterBody2D
 var evo: int = 0
 
 const SPEED = 50.0
+const HORIZONTAL_MARGIN = 24.0
 
 var move: bool = true
 
@@ -22,8 +23,6 @@ func _physics_process(delta) -> void:
 	if time <= 0:
 		direction = dirArray.pick_random()
 		time = timeArray.pick_random()
-		print(time)
-		print(direction)
 	
 	if direction > 0:
 			animated_sprite.flip_h = true
@@ -59,6 +58,7 @@ func _physics_process(delta) -> void:
 				animated_sprite.play("walk4")
 
 	move_and_slide()
+	_keep_in_bounds()
 	
 func toggle_visibility(object):
 	object.visible = !object.visible
@@ -72,3 +72,15 @@ func _input(event):
 
 func wait(seconds: float) -> void:
 	await get_tree().create_timer(seconds).timeout
+
+func _keep_in_bounds() -> void:
+	var viewport_size := get_viewport_rect().size
+	var left_limit := HORIZONTAL_MARGIN
+	var right_limit := viewport_size.x - HORIZONTAL_MARGIN
+
+	if position.x < left_limit:
+		position.x = left_limit
+		direction = 1
+	elif position.x > right_limit:
+		position.x = right_limit
+		direction = -1

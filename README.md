@@ -13,6 +13,14 @@
 - Produced Wear OS-focused build and deployment workflows: Android export configuration, emulator/device debugging, and plugin build/use instructions.
 - Led collaborative development with Git/GitHub practices, incremental feature delivery, and iterative testing across emulator and watch deployment targets.
 
+## Post-Internship Updates (Personal Development Work)
+- Implemented a full gameplay state manager with stat decay, clamping, passive coin gain, and persistent save/load using JSON.
+- Added a quest progression system with tracked objectives and coin rewards.
+- Added a pet mood system (`Happy`, `Calm`, `Tired`, `Hungry`, `Sick`) driven by live health/food/game-state conditions.
+- Expanded scene interactivity so Bedroom, Studyroom, and Bathroom all have tap-based actions tied to gameplay effects.
+- Added a live in-game status HUD and a toggleable summary panel showing session metrics (play time, quest status, resources, and interaction totals).
+- Improved navigation and maintainability by centralizing scene-path constants and wiring room-cycling behavior in the in-game UI.
+
 ## Repo Details
 This repo currently contains the Godot prototype and project infrastructure (scenes, scripts, assets, Android export settings, and deployment docs). Historical sensor/plugin implementation work is preserved in the repository history (for example the `Sensor-Data` branch lineage merged into `main` history).
 
@@ -47,7 +55,7 @@ cd directory_path
 
 Clone the repository using the clone command:
 ```
-https://github.com/KUAS-ubicomp-lab/SleepTamagochi.git
+git clone https://github.com/aaronzzheng/SleepTamagotchi.git
 ```
 <br/>
 

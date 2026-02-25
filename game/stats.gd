@@ -1,5 +1,305 @@
 extends Node
 
-var coins = 0
-var health = 100
-var food = 80
+const SAVE_PATH := "user://save.json"
+const MAX_STAT := 100.0
+const FOOD_DECAY_PER_SECOND := 0.35
+const HEALTH_DECAY_PER_SECOND_WHEN_STARVING := 0.55
+const HEALTH_RECOVERY_PER_SECOND_WHEN_FED := 0.10
+const COIN_GAIN_INTERVAL_SECONDS := 30.0
+const SAVE_INTERVAL_SECONDS := 10.0
+const QUEST_REWARD_MULTIPLIER := 1.0
+
+var coins := 0
+var health := 100.0
+var food := 80.0
+var mood := "Happy"
+var decay_enabled := true
+
+var total_play_seconds := 0.0
+var total_food_spent := 0.0
+var total_health_recovered := 0.0
+var total_coins_earned := 0
+var study_interactions := 0
+var bathroom_interactions := 0
+var rest_interactions := 0
+
+var completed_quest_count := 0
+var active_quest_index := 0
+var quests := [
+	{
+		"id": "well_fed",
+		"title": "Keep food above 60 for 2 minutes",
+		"type": "food_timer",
+		"goal": 120.0,
+		"progress": 0.0,
+		"reward": 20,
+		"done": false
+	},
+	{
+		"id": "study_habit",
+		"title": "Study 5 times",
+		"type": "study_count",
+		"goal": 5.0,
+		"progress": 0.0,
+		"reward": 15,
+		"done": false
+	},
+	{
+		"id": "self_care",
+		"title": "Use bathroom 3 times",
+		"type": "bathroom_count",
+		"goal": 3.0,
+		"progress": 0.0,
+		"reward": 10,
+		"done": false
+	},
+	{
+		"id": "rest_cycle",
+		"title": "Rest 4 times",
+		"type": "rest_count",
+		"goal": 4.0,
+		"progress": 0.0,
+		"reward": 10,
+		"done": false
+	}
+]
+
+var _coin_timer := 0.0
+var _save_timer := 0.0
+
+func _ready() -> void:
+	load_game()
+	_sanitize()
+
+func _process(delta: float) -> void:
+	total_play_seconds += delta
+
+	if decay_enabled:
+		food -= FOOD_DECAY_PER_SECOND * delta
+		if food <= 0.0:
+			health -= HEALTH_DECAY_PER_SECOND_WHEN_STARVING * delta
+		elif food >= 60.0:
+			add_health(HEALTH_RECOVERY_PER_SECOND_WHEN_FED * delta)
+
+	_coin_timer += delta
+	if _coin_timer >= COIN_GAIN_INTERVAL_SECONDS:
+		var earned := int(_coin_timer / COIN_GAIN_INTERVAL_SECONDS)
+		add_coins(earned)
+		_coin_timer -= float(earned) * COIN_GAIN_INTERVAL_SECONDS
+
+	_update_active_quest(delta)
+
+	_save_timer += delta
+	if _save_timer >= SAVE_INTERVAL_SECONDS:
+		save_game()
+		_save_timer = 0.0
+
+	_sanitize()
+
+func perform_study() -> String:
+	study_interactions += 1
+	add_coins(2)
+	adjust_food(-1.5)
+	_register_interaction("study")
+	return "Studied: +2 coins, -1 food"
+
+func perform_bathroom() -> String:
+	bathroom_interactions += 1
+	add_health(8.0)
+	adjust_food(-0.5)
+	_register_interaction("bathroom")
+	return "Bathroom: +8 health"
+
+func perform_rest() -> String:
+	rest_interactions += 1
+	add_health(5.0)
+	adjust_food(4.0)
+	_register_interaction("rest")
+	return "Rest: +5 health, +4 food"
+
+func add_health(amount: float) -> void:
+	if amount > 0.0:
+		total_health_recovered += amount
+	health += amount
+	_sanitize()
+
+func adjust_food(amount: float) -> void:
+	if amount < 0.0:
+		total_food_spent += abs(amount)
+	food += amount
+	_sanitize()
+
+func add_coins(amount: int) -> void:
+	if amount > 0:
+		total_coins_earned += amount
+	coins += amount
+	_sanitize()
+
+func spend_coins(amount: int) -> bool:
+	if amount <= 0:
+		return true
+	if coins < amount:
+		return false
+	coins -= amount
+	return true
+
+func get_active_quest_text() -> String:
+	if active_quest_index < 0 or active_quest_index >= quests.size():
+		return "All quests complete"
+	var quest: Dictionary = quests[active_quest_index]
+	return "%s: %d/%d" % [quest.get("title", "Quest"), int(quest.get("progress", 0.0)), int(quest.get("goal", 0.0))]
+
+func get_summary_text() -> String:
+	return "Mood: %s\nHealth: %d  Food: %d  Coins: %d\nQuest: %s\nPlay Time: %s\nFood Used: %d  Health Recovered: %d\nCoins Earned: %d\nStudy: %d  Bathroom: %d  Rest: %d\nQuests Completed: %d/%d" % [
+		mood,
+		int(health),
+		int(food),
+		coins,
+		get_active_quest_text(),
+		_format_time(total_play_seconds),
+		int(total_food_spent),
+		int(total_health_recovered),
+		total_coins_earned,
+		study_interactions,
+		bathroom_interactions,
+		rest_interactions,
+		completed_quest_count,
+		quests.size()
+	]
+
+func save_game() -> void:
+	var file := FileAccess.open(SAVE_PATH, FileAccess.WRITE)
+	if file == null:
+		return
+	var payload := {
+		"coins": coins,
+		"health": health,
+		"food": food,
+		"mood": mood,
+		"decay_enabled": decay_enabled,
+		"total_play_seconds": total_play_seconds,
+		"total_food_spent": total_food_spent,
+		"total_health_recovered": total_health_recovered,
+		"total_coins_earned": total_coins_earned,
+		"study_interactions": study_interactions,
+		"bathroom_interactions": bathroom_interactions,
+		"rest_interactions": rest_interactions,
+		"completed_quest_count": completed_quest_count,
+		"active_quest_index": active_quest_index,
+		"quests": quests
+	}
+	file.store_string(JSON.stringify(payload))
+
+func load_game() -> void:
+	if not FileAccess.file_exists(SAVE_PATH):
+		return
+	var file := FileAccess.open(SAVE_PATH, FileAccess.READ)
+	if file == null:
+		return
+	var parsed = JSON.parse_string(file.get_as_text())
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return
+
+	coins = int(parsed.get("coins", coins))
+	health = float(parsed.get("health", health))
+	food = float(parsed.get("food", food))
+	mood = str(parsed.get("mood", mood))
+	decay_enabled = bool(parsed.get("decay_enabled", decay_enabled))
+	total_play_seconds = float(parsed.get("total_play_seconds", total_play_seconds))
+	total_food_spent = float(parsed.get("total_food_spent", total_food_spent))
+	total_health_recovered = float(parsed.get("total_health_recovered", total_health_recovered))
+	total_coins_earned = int(parsed.get("total_coins_earned", total_coins_earned))
+	study_interactions = int(parsed.get("study_interactions", study_interactions))
+	bathroom_interactions = int(parsed.get("bathroom_interactions", bathroom_interactions))
+	rest_interactions = int(parsed.get("rest_interactions", rest_interactions))
+	completed_quest_count = int(parsed.get("completed_quest_count", completed_quest_count))
+	active_quest_index = int(parsed.get("active_quest_index", active_quest_index))
+
+	var loaded_quests = parsed.get("quests", [])
+	if typeof(loaded_quests) == TYPE_ARRAY and loaded_quests.size() == quests.size():
+		quests = loaded_quests
+
+	_sanitize()
+
+func _register_interaction(kind: String) -> void:
+	if active_quest_index < 0 or active_quest_index >= quests.size():
+		return
+	var quest: Dictionary = quests[active_quest_index]
+	match kind:
+		"study":
+			if quest.get("type", "") == "study_count":
+				quest["progress"] = float(quest.get("progress", 0.0)) + 1.0
+		"bathroom":
+			if quest.get("type", "") == "bathroom_count":
+				quest["progress"] = float(quest.get("progress", 0.0)) + 1.0
+		"rest":
+			if quest.get("type", "") == "rest_count":
+				quest["progress"] = float(quest.get("progress", 0.0)) + 1.0
+	quests[active_quest_index] = quest
+	_check_quest_completion()
+
+func _update_active_quest(delta: float) -> void:
+	if active_quest_index < 0 or active_quest_index >= quests.size():
+		return
+	var quest: Dictionary = quests[active_quest_index]
+	if quest.get("done", false):
+		advance_quest()
+		return
+	if quest.get("type", "") == "food_timer":
+		if food >= 60.0:
+			quest["progress"] = float(quest.get("progress", 0.0)) + delta
+	quests[active_quest_index] = quest
+	_check_quest_completion()
+
+func _check_quest_completion() -> void:
+	if active_quest_index < 0 or active_quest_index >= quests.size():
+		return
+	var quest: Dictionary = quests[active_quest_index]
+	var progress := float(quest.get("progress", 0.0))
+	var goal := float(quest.get("goal", 1.0))
+	if progress < goal or bool(quest.get("done", false)):
+		return
+
+	quest["done"] = true
+	quest["progress"] = goal
+	quests[active_quest_index] = quest
+
+	completed_quest_count += 1
+	var reward := int(float(quest.get("reward", 0)) * QUEST_REWARD_MULTIPLIER)
+	add_coins(reward)
+	advance_quest()
+
+func advance_quest() -> void:
+	for i in range(quests.size()):
+		if not bool(quests[i].get("done", false)):
+			active_quest_index = i
+			return
+	active_quest_index = quests.size()
+
+func _sanitize() -> void:
+	coins = max(coins, 0)
+	health = clampf(health, 0.0, MAX_STAT)
+	food = clampf(food, 0.0, MAX_STAT)
+	mood = _compute_mood()
+
+func _compute_mood() -> String:
+	if health <= 20.0 or food <= 15.0:
+		return "Sick"
+	if food <= 35.0:
+		return "Hungry"
+	if health <= 45.0:
+		return "Tired"
+	if decay_enabled == false:
+		return "Calm"
+	return "Happy"
+
+func _format_time(seconds: float) -> String:
+	var total := int(seconds)
+	var hours := total / 3600
+	var minutes := (total % 3600) / 60
+	var secs := total % 60
+	return "%02d:%02d:%02d" % [hours, minutes, secs]
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
+		save_game()

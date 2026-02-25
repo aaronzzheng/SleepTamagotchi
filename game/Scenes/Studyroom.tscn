@@ -1,9 +1,14 @@
-[gd_scene load_steps=2 format=3 uid="uid://blddmq3o4eq0f"]
+[gd_scene load_steps=4 format=3 uid="uid://blddmq3o4eq0f"]
 
 [ext_resource type="Texture2D" uid="uid://ldo5yvfqx6l3" path="res://Assets/Scenes/Studyroom/Study_room.png" id="1_okucx"]
+[ext_resource type="Script" path="res://Scenes/studyroom.gd" id="2_ff6jk"]
+[ext_resource type="PackedScene" uid="uid://bnmfcap87r7pr" path="res://Scenes/UI/InGameMenuUI.tscn" id="3_aek8j"]
 
 [node name="Studyroom" type="Node2D"]
+script = ExtResource("2_ff6jk")
 
 [node name="StudyRoom" type="Sprite2D" parent="."]
 position = Vector2(224, 224)
 texture = ExtResource("1_okucx")
+
+[node name="InGameMenu" parent="." instance=ExtResource("3_aek8j")]

@@ -1,5 +1,7 @@
 extends MarginContainer
 
+const BEDROOM_SCENE_PATH := "res://Scenes/Bedroom.tscn"
+
 # Export screens
 @export var main_menu_screen: VBoxContainer
 @export var setting_menu_screen: MarginContainer
@@ -20,28 +22,26 @@ var setting_buttons: Array
 func _ready():
 	main_buttons = [start_button, setting_button, exit_button]
 	setting_buttons = [close_setting_button]
+	_wire_hover_animations(main_buttons)
+	_wire_hover_animations(setting_buttons)
 
-# Function performed per frame
-func _process(_delta):
-	update_button_scale()
+func _wire_hover_animations(buttons: Array) -> void:
+	for button in buttons:
+		if button == null:
+			continue
+		button.pivot_offset = button.size / 2
+		button.mouse_entered.connect(_on_button_mouse_entered.bind(button))
+		button.mouse_exited.connect(_on_button_mouse_exited.bind(button))
 
-# Animating buttons
-func update_button_scale():
-	for button in main_buttons:
-		button_hov(button, 1.25, 0.2)
-	for button in setting_buttons:
-		button_hov(button, 1.25, 0.2)
+func _on_button_mouse_entered(button: Button) -> void:
+	_animate_button_scale(button, 1.25, 0.2)
 
-func button_hov(button: Button, tweenSize, time):
-	button.pivot_offset = button.size / 2
-	if button.is_hovered():
-		tween(button, "scale", Vector2.ONE * tweenSize, time)
-	else:
-		tween(button, "scale", Vector2.ONE, time)
+func _on_button_mouse_exited(button: Button) -> void:
+	_animate_button_scale(button, 1.0, 0.2)
 
-func tween(button, property, amount, time):
-	var tweenSize = create_tween()
-	tweenSize.tween_property(button, property, amount, time)
+func _animate_button_scale(button: Button, target_scale: float, duration: float) -> void:
+	var scale_tween = create_tween()
+	scale_tween.tween_property(button, "scale", Vector2.ONE * target_scale, duration)
 
 # Toggle visability of menu
 func toggle_visibility(object):
@@ -49,7 +49,7 @@ func toggle_visibility(object):
 
 # Click control
 func _on_start_button_pressed() -> void:
-	get_tree().change_scene_to_file("res://Scenes/Bedroom.tscn")
+	get_tree().change_scene_to_file(BEDROOM_SCENE_PATH)
 
 func _on_setting_button_pressed() -> void:
 	toggle_visibility(setting_menu_screen)
