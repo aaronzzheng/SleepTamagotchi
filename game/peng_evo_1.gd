@@ -11,26 +11,30 @@ var dirArray: Array[int] = [-1, 0, 1]
 var timeArray: Array[float] = [0.5, 1.0, 1.5, 2.0]
 var direction: int = 0
 var time: float = 1
+var _mood_speed_scale: float = 1.0
 
 @export var peng_1: AnimatedSprite2D
 
 @onready var animated_sprite = $AnimatedSprite2D
 
 func _physics_process(delta) -> void:
-	
+
+	evo = clampi(Stats.completed_quest_count, 0, 3)
+	_apply_mood()
+
 	time -= delta
-	
+
 	if time <= 0:
 		direction = dirArray.pick_random()
 		time = timeArray.pick_random()
-	
+
 	if direction > 0:
 			animated_sprite.flip_h = true
 	elif direction < 0:
 		animated_sprite.flip_h = false
 	
 	if direction:
-		velocity.x = direction * SPEED
+		velocity.x = direction * SPEED * _mood_speed_scale
 	else:
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 	
@@ -62,13 +66,25 @@ func _physics_process(delta) -> void:
 	
 func toggle_visibility(object):
 	object.visible = !object.visible
-	
-func _input(event):
-	if Input.is_action_just_pressed("evolve"):
-		if evo < 3:
-			evo += 1
-		else:
-			evo = 0
+
+func _apply_mood() -> void:
+	match Stats.mood:
+		"Sick":
+			animated_sprite.modulate = Color(0.75, 0.75, 0.85)
+			animated_sprite.speed_scale = 0.6
+			_mood_speed_scale = 0.6
+		"Hungry":
+			animated_sprite.modulate = Color(1.0, 0.9, 0.8)
+			animated_sprite.speed_scale = 0.8
+			_mood_speed_scale = 0.8
+		"Tired":
+			animated_sprite.modulate = Color(0.85, 0.85, 1.0)
+			animated_sprite.speed_scale = 0.85
+			_mood_speed_scale = 0.85
+		_:
+			animated_sprite.modulate = Color(1, 1, 1)
+			animated_sprite.speed_scale = 1.0
+			_mood_speed_scale = 1.0
 
 func wait(seconds: float) -> void:
 	await get_tree().create_timer(seconds).timeout

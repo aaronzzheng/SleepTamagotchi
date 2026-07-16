@@ -1,4 +1,4 @@
-extends Control
+extends "res://Scenes/UI/hoverable_menu.gd"
 
 const MAIN_SCENE_PATH := "res://Scenes/Main.tscn"
 const BEDROOM_SCENE_PATH := "res://Scenes/Bedroom.tscn"
@@ -42,24 +42,6 @@ func _process(_delta: float) -> void:
 		_status_label.text = "Mood: %s  |  Quest: %s" % [Stats.mood, Stats.get_active_quest_text()]
 	if _summary_panel != null and _summary_panel.visible:
 		_refresh_summary()
-
-func _wire_hover_animations(buttons: Array) -> void:
-	for button in buttons:
-		if button == null:
-			continue
-		button.pivot_offset = button.size / 2
-		button.mouse_entered.connect(_on_button_mouse_entered.bind(button))
-		button.mouse_exited.connect(_on_button_mouse_exited.bind(button))
-
-func _on_button_mouse_entered(button: Button) -> void:
-	_animate_button_scale(button, 1.25, 0.2)
-
-func _on_button_mouse_exited(button: Button) -> void:
-	_animate_button_scale(button, 1.0, 0.2)
-
-func _animate_button_scale(button: Button, target_scale: float, duration: float) -> void:
-	var scale_tween = create_tween()
-	scale_tween.tween_property(button, "scale", Vector2.ONE * target_scale, duration)
 
 func _wire_button_actions() -> void:
 	if setting_button != null and not setting_button.pressed.is_connected(_on_setting_button_pressed):

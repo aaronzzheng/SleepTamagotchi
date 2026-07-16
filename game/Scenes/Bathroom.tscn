@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://1qqt5btod680"]
+[gd_scene load_steps=5 format=3 uid="uid://1qqt5btod680"]
 
 [ext_resource type="Texture2D" uid="uid://m84qrbcprpcm" path="res://Assets/Scenes/Bathroom/Bathroom.png" id="1_wqx55"]
 [ext_resource type="Script" path="res://Scenes/bathroom.gd" id="2_8g7rr"]
 [ext_resource type="PackedScene" uid="uid://bnmfcap87r7pr" path="res://Scenes/UI/InGameMenuUI.tscn" id="3_2n1n7"]
+[ext_resource type="PackedScene" uid="uid://q2saoxvm0287" path="res://Scenes/UI/BarUI.tscn" id="4_barui"]
 
 [node name="Bathroom" type="Node2D"]
 script = ExtResource("2_8g7rr")
@@ -10,5 +11,10 @@ script = ExtResource("2_8g7rr")
 [node name="Bathroom" type="Sprite2D" parent="."]
 position = Vector2(224, 224)
 texture = ExtResource("1_wqx55")
+
+[node name="BarUI" parent="." instance=ExtResource("4_barui")]
+custom_minimum_size = Vector2(450, 450)
+offset_right = 450.0
+offset_bottom = 450.0
 
 [node name="InGameMenu" parent="." instance=ExtResource("3_2n1n7")]

@@ -1,45 +1,14 @@
-extends Node2D
-
-const ACTION_COOLDOWN_SECONDS := 0.8
-
-var _cooldown := 0.0
-var _message_timer := 0.0
-var _message_label: Label
+extends "res://Scenes/interaction_room.gd"
 
 func _ready() -> void:
-	_message_label = Label.new()
-	_message_label.position = Vector2(10, 420)
-	_message_label.size = Vector2(430, 24)
-	_message_label.add_theme_font_size_override("font_size", 14)
-	add_child(_message_label)
+	action_cooldown_seconds = 0.8
+	super._ready()
 
-func _process(delta: float) -> void:
-	_cooldown = max(_cooldown - delta, 0.0)
-	if _message_timer > 0.0:
-		_message_timer -= delta
-		if _message_timer <= 0.0:
-			_message_label.text = ""
-
-func _unhandled_input(event: InputEvent) -> void:
-	if _cooldown > 0.0:
-		return
-	if not (event is InputEventMouseButton and event.pressed):
-		return
-
-	var pos := event.position
-	var message := ""
-
+func _handle_tap(pos: Vector2) -> String:
 	if pos.y >= 300.0:
-		message = Stats.perform_rest()
+		return Stats.perform_rest()
 	elif pos.x <= 150.0 and pos.y < 300.0:
-		message = Stats.perform_study()
+		return Stats.perform_study()
 	elif pos.x >= 300.0 and pos.y < 300.0:
-		message = Stats.perform_bathroom()
-
-	if message != "":
-		_show_message(message)
-		_cooldown = ACTION_COOLDOWN_SECONDS
-
-func _show_message(message: String) -> void:
-	_message_label.text = message
-	_message_timer = 1.6
+		return Stats.perform_bathroom()
+	return ""

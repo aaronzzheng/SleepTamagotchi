@@ -1,7 +1,6 @@
-[gd_scene load_steps=29 format=3 uid="uid://ct6uwah4bgor"]
+[gd_scene load_steps=28 format=3 uid="uid://ct6uwah4bgor"]
 
 [ext_resource type="Texture2D" uid="uid://c8u8irgitu4ck" path="res://Assets/UI/HealthBarUI.png" id="1_o644j"]
-[ext_resource type="Script" path="res://Scenes/UI/health_bar_ui.gd" id="2_17w81"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_eqst8"]
 atlas = ExtResource("1_o644j")
@@ -190,4 +189,3 @@ animations = [{
 sprite_frames = SubResource("SpriteFrames_merq5")
 frame = 3
 frame_progress = 0.181087
-script = ExtResource("2_17w81")

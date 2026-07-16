@@ -8,6 +8,8 @@ const HEALTH_RECOVERY_PER_SECOND_WHEN_FED := 0.10
 const COIN_GAIN_INTERVAL_SECONDS := 30.0
 const SAVE_INTERVAL_SECONDS := 10.0
 const QUEST_REWARD_MULTIPLIER := 1.0
+const MAX_OFFLINE_SECONDS := 43200.0 # cap catch-up simulation at 12 hours
+const OFFLINE_STEP_SECONDS := 5.0
 
 var coins := 0
 var health := 100.0
@@ -73,7 +75,17 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	total_play_seconds += delta
+	_advance_stats(delta)
 
+	_save_timer += delta
+	if _save_timer >= SAVE_INTERVAL_SECONDS:
+		save_game()
+		_save_timer = 0.0
+
+	_sanitize()
+
+# Core per-tick simulation, shared by the live foreground loop and offline catch-up.
+func _advance_stats(delta: float) -> void:
 	if decay_enabled:
 		food -= FOOD_DECAY_PER_SECOND * delta
 		if food <= 0.0:
@@ -89,11 +101,14 @@ func _process(delta: float) -> void:
 
 	_update_active_quest(delta)
 
-	_save_timer += delta
-	if _save_timer >= SAVE_INTERVAL_SECONDS:
-		save_game()
-		_save_timer = 0.0
-
+# Simulates time passed while the app was closed (elapsed real seconds),
+# so the pet's stats/quests/coins reflect being away, not just time in-foreground.
+func _apply_offline_progress(elapsed_seconds: float) -> void:
+	var remaining := clampf(elapsed_seconds, 0.0, MAX_OFFLINE_SECONDS)
+	while remaining > 0.0:
+		var step := minf(OFFLINE_STEP_SECONDS, remaining)
+		_advance_stats(step)
+		remaining -= step
 	_sanitize()
 
 func perform_study() -> String:
@@ -150,7 +165,7 @@ func get_active_quest_text() -> String:
 	return "%s: %d/%d" % [quest.get("title", "Quest"), int(quest.get("progress", 0.0)), int(quest.get("goal", 0.0))]
 
 func get_summary_text() -> String:
-	return "Mood: %s\nHealth: %d  Food: %d  Coins: %d\nQuest: %s\nPlay Time: %s\nFood Used: %d  Health Recovered: %d\nCoins Earned: %d\nStudy: %d  Bathroom: %d  Rest: %d\nQuests Completed: %d/%d" % [
+	return "Mood: %s\nHealth: %d  Food: %d  Coins: %d\nQuest: %s\nPlay Time: %s\nFood Used: %d  Health Recovered: %d\nCoins Earned: %d\nStudy: %d  Bathroom: %d  Rest: %d\nTotal Quests Completed: %d" % [
 		mood,
 		int(health),
 		int(food),
@@ -163,8 +178,7 @@ func get_summary_text() -> String:
 		study_interactions,
 		bathroom_interactions,
 		rest_interactions,
-		completed_quest_count,
-		quests.size()
+		completed_quest_count
 	]
 
 func save_game() -> void:
@@ -186,7 +200,8 @@ func save_game() -> void:
 		"rest_interactions": rest_interactions,
 		"completed_quest_count": completed_quest_count,
 		"active_quest_index": active_quest_index,
-		"quests": quests
+		"quests": quests,
+		"last_active_unix": int(Time.get_unix_time_from_system())
 	}
 	file.store_string(JSON.stringify(payload))
 
@@ -218,6 +233,15 @@ func load_game() -> void:
 	var loaded_quests = parsed.get("quests", [])
 	if typeof(loaded_quests) == TYPE_ARRAY and loaded_quests.size() == quests.size():
 		quests = loaded_quests
+
+	if active_quest_index < 0 or active_quest_index >= quests.size():
+		advance_quest()
+
+	var saved_last_active := int(parsed.get("last_active_unix", 0))
+	if saved_last_active > 0:
+		var elapsed := float(int(Time.get_unix_time_from_system()) - saved_last_active)
+		if elapsed > 0.0:
+			_apply_offline_progress(elapsed)
 
 	_sanitize()
 
@@ -274,7 +298,17 @@ func advance_quest() -> void:
 		if not bool(quests[i].get("done", false)):
 			active_quest_index = i
 			return
-	active_quest_index = quests.size()
+	_reset_quest_cycle()
+
+# Once every quest is done, loop the list back to the start instead of
+# leaving the player with a permanent "all quests complete" dead end.
+func _reset_quest_cycle() -> void:
+	for i in range(quests.size()):
+		var quest: Dictionary = quests[i]
+		quest["done"] = false
+		quest["progress"] = 0.0
+		quests[i] = quest
+	active_quest_index = 0
 
 func _sanitize() -> void:
 	coins = max(coins, 0)
@@ -301,5 +335,6 @@ func _format_time(seconds: float) -> String:
 	return "%02d:%02d:%02d" % [hours, minutes, secs]
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_CLOSE_REQUEST or what == NOTIFICATION_PREDELETE:
-		save_game()
+	match what:
+		NOTIFICATION_WM_CLOSE_REQUEST, NOTIFICATION_PREDELETE, NOTIFICATION_APPLICATION_PAUSED, NOTIFICATION_APPLICATION_FOCUS_OUT:
+			save_game()
