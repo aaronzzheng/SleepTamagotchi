@@ -47,6 +47,10 @@ var pet_theme_index := 0
 var last_welcome_message := ""
 var has_pending_welcome_message := false
 
+var notification_queue: Array[String] = []
+var _last_notified_mood := ""
+var _last_notified_evo_stage := 0
+
 var completed_quest_count := 0
 var active_quest_index := 0
 var quests := [
@@ -356,6 +360,13 @@ func _check_quest_completion() -> void:
 	completed_quest_count += 1
 	var reward := int(float(quest.get("reward", 0)) * QUEST_REWARD_MULTIPLIER)
 	add_coins(reward)
+	notification_queue.append("Quest complete: %s! +%d coins" % [quest.get("title", "Quest"), reward])
+
+	var new_evo_stage := clampi(completed_quest_count, 0, 3)
+	if new_evo_stage > _last_notified_evo_stage:
+		notification_queue.append("Your pet evolved!")
+		_last_notified_evo_stage = new_evo_stage
+
 	advance_quest()
 
 func advance_quest() -> void:
@@ -393,6 +404,7 @@ func _maybe_unlock_achievement(id: String, condition_met: bool) -> void:
 		achievement["unlocked"] = true
 		achievements[i] = achievement
 		add_coins(ACHIEVEMENT_REWARD)
+		notification_queue.append("Achievement unlocked: %s! +%d coins" % [achievement.get("title", "Achievement"), ACHIEVEMENT_REWARD])
 		return
 
 func get_unlocked_achievement_count() -> int:
@@ -450,6 +462,21 @@ func _sanitize() -> void:
 	health = clampf(health, 0.0, MAX_STAT)
 	food = clampf(food, 0.0, MAX_STAT)
 	mood = _compute_mood()
+	_notify_on_mood_change()
+
+func _notify_on_mood_change() -> void:
+	if mood == _last_notified_mood:
+		return
+	if mood == "Sick":
+		notification_queue.append("Your pet is sick! It needs care now.")
+	elif mood == "Hungry":
+		notification_queue.append("Your pet is getting hungry.")
+	_last_notified_mood = mood
+
+func consume_notifications() -> Array[String]:
+	var messages := notification_queue.duplicate()
+	notification_queue.clear()
+	return messages
 
 func _compute_mood() -> String:
 	if health <= 20.0 or food <= 15.0:
