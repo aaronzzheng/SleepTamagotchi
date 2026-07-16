@@ -5,6 +5,7 @@ var action_cooldown_seconds := 0.6
 var _cooldown := 0.0
 var _message_timer := 0.0
 var _message_label: Label
+var _warning_label: Label
 
 func _ready() -> void:
 	_message_label = Label.new()
@@ -12,6 +13,15 @@ func _ready() -> void:
 	_message_label.size = Vector2(430, 24)
 	_message_label.add_theme_font_size_override("font_size", 14)
 	add_child(_message_label)
+
+	_warning_label = Label.new()
+	_warning_label.position = Vector2(10, 396)
+	_warning_label.size = Vector2(430, 20)
+	_warning_label.add_theme_font_size_override("font_size", 13)
+	_warning_label.add_theme_color_override("font_color", Color(1.0, 0.4, 0.4))
+	_warning_label.visible = false
+	add_child(_warning_label)
+
 	var intro := _get_intro_message()
 	if intro != "":
 		_show_message(intro)
@@ -22,6 +32,18 @@ func _process(delta: float) -> void:
 		_message_timer -= delta
 		if _message_timer <= 0.0:
 			_message_label.text = ""
+	_update_warning_banner()
+
+func _update_warning_banner() -> void:
+	match Stats.mood:
+		"Sick":
+			_warning_label.text = "Your pet is sick! It needs care now."
+			_warning_label.visible = true
+		"Hungry":
+			_warning_label.text = "Your pet is hungry!"
+			_warning_label.visible = true
+		_:
+			_warning_label.visible = false
 
 func _unhandled_input(event: InputEvent) -> void:
 	if _cooldown > 0.0:

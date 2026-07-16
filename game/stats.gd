@@ -10,6 +10,21 @@ const SAVE_INTERVAL_SECONDS := 10.0
 const QUEST_REWARD_MULTIPLIER := 1.0
 const MAX_OFFLINE_SECONDS := 43200.0 # cap catch-up simulation at 12 hours
 const OFFLINE_STEP_SECONDS := 5.0
+const SECONDS_PER_DAY := 86400.0
+
+const STREAK_BASE_REWARD := 10
+const STREAK_MAX_BONUS := 20
+
+const THEME_CHANGE_COST := 15
+const PET_THEME_NAMES := ["Classic", "Sakura", "Mint", "Midnight"]
+const PET_THEME_COLORS := [
+	Color(1, 1, 1),
+	Color(1, 0.82, 0.88),
+	Color(0.82, 1, 0.88),
+	Color(0.82, 0.85, 1)
+]
+
+const ACHIEVEMENT_REWARD := 10
 
 var coins := 0
 var health := 100.0
@@ -24,6 +39,13 @@ var total_coins_earned := 0
 var study_interactions := 0
 var bathroom_interactions := 0
 var rest_interactions := 0
+
+var last_active_day := -1
+var login_streak_days := 0
+var pet_theme_index := 0
+
+var last_welcome_message := ""
+var has_pending_welcome_message := false
 
 var completed_quest_count := 0
 var active_quest_index := 0
@@ -66,6 +88,15 @@ var quests := [
 	}
 ]
 
+var achievements := [
+	{"id": "first_evolution", "title": "First Growth Spurt", "unlocked": false},
+	{"id": "fully_evolved", "title": "Fully Grown", "unlocked": false},
+	{"id": "quest_master", "title": "Quest Cycle Complete", "unlocked": false},
+	{"id": "coin_collector", "title": "Coin Collector (500 coins earned)", "unlocked": false},
+	{"id": "dedicated_caretaker", "title": "Dedicated Caretaker (1h played)", "unlocked": false},
+	{"id": "streak_starter", "title": "3-Day Streak", "unlocked": false}
+]
+
 var _coin_timer := 0.0
 var _save_timer := 0.0
 
@@ -100,6 +131,7 @@ func _advance_stats(delta: float) -> void:
 		_coin_timer -= float(earned) * COIN_GAIN_INTERVAL_SECONDS
 
 	_update_active_quest(delta)
+	_check_achievements()
 
 # Simulates time passed while the app was closed (elapsed real seconds),
 # so the pet's stats/quests/coins reflect being away, not just time in-foreground.
@@ -165,7 +197,7 @@ func get_active_quest_text() -> String:
 	return "%s: %d/%d" % [quest.get("title", "Quest"), int(quest.get("progress", 0.0)), int(quest.get("goal", 0.0))]
 
 func get_summary_text() -> String:
-	return "Mood: %s\nHealth: %d  Food: %d  Coins: %d\nQuest: %s\nPlay Time: %s\nFood Used: %d  Health Recovered: %d\nCoins Earned: %d\nStudy: %d  Bathroom: %d  Rest: %d\nTotal Quests Completed: %d" % [
+	return "Mood: %s\nHealth: %d  Food: %d  Coins: %d\nQuest: %s\nPlay Time: %s\nFood Used: %d  Health Recovered: %d\nCoins Earned: %d\nStudy: %d  Bathroom: %d  Rest: %d\nTotal Quests Completed: %d\nLogin Streak: %d day(s)\nAchievements (%d/%d):\n%s" % [
 		mood,
 		int(health),
 		int(food),
@@ -178,7 +210,11 @@ func get_summary_text() -> String:
 		study_interactions,
 		bathroom_interactions,
 		rest_interactions,
-		completed_quest_count
+		completed_quest_count,
+		login_streak_days,
+		get_unlocked_achievement_count(),
+		achievements.size(),
+		get_achievements_text()
 	]
 
 func save_game() -> void:
@@ -201,6 +237,10 @@ func save_game() -> void:
 		"completed_quest_count": completed_quest_count,
 		"active_quest_index": active_quest_index,
 		"quests": quests,
+		"achievements": achievements,
+		"last_active_day": last_active_day,
+		"login_streak_days": login_streak_days,
+		"pet_theme_index": pet_theme_index,
 		"last_active_unix": int(Time.get_unix_time_from_system())
 	}
 	file.store_string(JSON.stringify(payload))
@@ -234,14 +274,39 @@ func load_game() -> void:
 	if typeof(loaded_quests) == TYPE_ARRAY and loaded_quests.size() == quests.size():
 		quests = loaded_quests
 
+	var loaded_achievements = parsed.get("achievements", [])
+	if typeof(loaded_achievements) == TYPE_ARRAY and loaded_achievements.size() == achievements.size():
+		achievements = loaded_achievements
+
+	last_active_day = int(parsed.get("last_active_day", last_active_day))
+	login_streak_days = int(parsed.get("login_streak_days", login_streak_days))
+	pet_theme_index = int(parsed.get("pet_theme_index", pet_theme_index))
+	if pet_theme_index < 0 or pet_theme_index >= PET_THEME_COLORS.size():
+		pet_theme_index = 0
+
 	if active_quest_index < 0 or active_quest_index >= quests.size():
 		advance_quest()
+
+	var welcome_parts: Array[String] = []
 
 	var saved_last_active := int(parsed.get("last_active_unix", 0))
 	if saved_last_active > 0:
 		var elapsed := float(int(Time.get_unix_time_from_system()) - saved_last_active)
 		if elapsed > 0.0:
+			var before_health := health
+			var before_food := food
+			var before_coins := coins
 			_apply_offline_progress(elapsed)
+			welcome_parts.append(_format_offline_summary(elapsed, health - before_health, food - before_food, coins - before_coins))
+
+	var current_day := int(Time.get_unix_time_from_system() / SECONDS_PER_DAY)
+	var streak_message := _update_login_streak(current_day)
+	if streak_message != "":
+		welcome_parts.append(streak_message)
+
+	if welcome_parts.size() > 0:
+		last_welcome_message = "\n".join(welcome_parts)
+		has_pending_welcome_message = true
 
 	_sanitize()
 
@@ -310,6 +375,76 @@ func _reset_quest_cycle() -> void:
 		quests[i] = quest
 	active_quest_index = 0
 
+func _check_achievements() -> void:
+	_maybe_unlock_achievement("first_evolution", completed_quest_count >= 1)
+	_maybe_unlock_achievement("fully_evolved", completed_quest_count >= 3)
+	_maybe_unlock_achievement("quest_master", completed_quest_count >= 4)
+	_maybe_unlock_achievement("coin_collector", total_coins_earned >= 500)
+	_maybe_unlock_achievement("dedicated_caretaker", total_play_seconds >= 3600.0)
+	_maybe_unlock_achievement("streak_starter", login_streak_days >= 3)
+
+func _maybe_unlock_achievement(id: String, condition_met: bool) -> void:
+	if not condition_met:
+		return
+	for i in range(achievements.size()):
+		var achievement: Dictionary = achievements[i]
+		if achievement.get("id", "") != id or bool(achievement.get("unlocked", false)):
+			continue
+		achievement["unlocked"] = true
+		achievements[i] = achievement
+		add_coins(ACHIEVEMENT_REWARD)
+		return
+
+func get_unlocked_achievement_count() -> int:
+	var count := 0
+	for achievement in achievements:
+		if bool(achievement.get("unlocked", false)):
+			count += 1
+	return count
+
+func get_achievements_text() -> String:
+	var lines: Array[String] = []
+	for achievement in achievements:
+		var mark := "[x]" if bool(achievement.get("unlocked", false)) else "[ ]"
+		lines.append("%s %s" % [mark, achievement.get("title", "Achievement")])
+	return "\n".join(lines)
+
+func get_pet_theme_color() -> Color:
+	return PET_THEME_COLORS[pet_theme_index]
+
+func get_pet_theme_name() -> String:
+	return PET_THEME_NAMES[pet_theme_index]
+
+func cycle_pet_theme() -> String:
+	if not spend_coins(THEME_CHANGE_COST):
+		return "Need %d coins to re-theme" % THEME_CHANGE_COST
+	pet_theme_index = (pet_theme_index + 1) % PET_THEME_COLORS.size()
+	return "Pet theme: %s" % get_pet_theme_name()
+
+func reset_game() -> void:
+	coins = 0
+	health = 100.0
+	food = 80.0
+	decay_enabled = true
+	total_play_seconds = 0.0
+	total_food_spent = 0.0
+	total_health_recovered = 0.0
+	total_coins_earned = 0
+	study_interactions = 0
+	bathroom_interactions = 0
+	rest_interactions = 0
+	completed_quest_count = 0
+	pet_theme_index = 0
+	login_streak_days = 0
+	last_active_day = -1
+	for i in range(achievements.size()):
+		var achievement: Dictionary = achievements[i]
+		achievement["unlocked"] = false
+		achievements[i] = achievement
+	_reset_quest_cycle()
+	_sanitize()
+	save_game()
+
 func _sanitize() -> void:
 	coins = max(coins, 0)
 	health = clampf(health, 0.0, MAX_STAT)
@@ -326,6 +461,53 @@ func _compute_mood() -> String:
 	if decay_enabled == false:
 		return "Calm"
 	return "Happy"
+
+func _update_login_streak(current_day: int) -> String:
+	if last_active_day < 0:
+		login_streak_days = 1
+		last_active_day = current_day
+		return ""
+	if current_day == last_active_day:
+		return ""
+	if current_day == last_active_day + 1:
+		login_streak_days += 1
+		var reward := mini(STREAK_BASE_REWARD + login_streak_days, STREAK_BASE_REWARD + STREAK_MAX_BONUS)
+		add_coins(reward)
+		last_active_day = current_day
+		return "%d-day streak! +%d coins" % [login_streak_days, reward]
+	login_streak_days = 1
+	last_active_day = current_day
+	return "Streak reset — welcome back!"
+
+func consume_welcome_message() -> String:
+	has_pending_welcome_message = false
+	var message := last_welcome_message
+	last_welcome_message = ""
+	return message
+
+func _format_offline_summary(elapsed_seconds: float, health_delta: float, food_delta: float, coin_delta: int) -> String:
+	var capped := elapsed_seconds >= MAX_OFFLINE_SECONDS
+	var duration_text := _format_duration_human(minf(elapsed_seconds, MAX_OFFLINE_SECONDS))
+	var text := "While you were away for %s:\nHealth %s, Food %s, Coins %s" % [
+		duration_text,
+		_format_signed_int(int(round(health_delta))),
+		_format_signed_int(int(round(food_delta))),
+		_format_signed_int(coin_delta)
+	]
+	if capped:
+		text += "\n(catch-up capped at 12h)"
+	return text
+
+func _format_signed_int(value: int) -> String:
+	return "+%d" % value if value >= 0 else str(value)
+
+func _format_duration_human(seconds: float) -> String:
+	var total_minutes := int(seconds) / 60
+	var hours := total_minutes / 60
+	var minutes := total_minutes % 60
+	if hours > 0:
+		return "%dh %dm" % [hours, minutes]
+	return "%dm" % minutes
 
 func _format_time(seconds: float) -> String:
 	var total := int(seconds)

@@ -68,21 +68,22 @@ func toggle_visibility(object):
 	object.visible = !object.visible
 
 func _apply_mood() -> void:
+	var theme_color := Stats.get_pet_theme_color()
 	match Stats.mood:
 		"Sick":
-			animated_sprite.modulate = Color(0.75, 0.75, 0.85)
+			animated_sprite.modulate = theme_color * Color(0.75, 0.75, 0.85)
 			animated_sprite.speed_scale = 0.6
 			_mood_speed_scale = 0.6
 		"Hungry":
-			animated_sprite.modulate = Color(1.0, 0.9, 0.8)
+			animated_sprite.modulate = theme_color * Color(1.0, 0.9, 0.8)
 			animated_sprite.speed_scale = 0.8
 			_mood_speed_scale = 0.8
 		"Tired":
-			animated_sprite.modulate = Color(0.85, 0.85, 1.0)
+			animated_sprite.modulate = theme_color * Color(0.85, 0.85, 1.0)
 			animated_sprite.speed_scale = 0.85
 			_mood_speed_scale = 0.85
 		_:
-			animated_sprite.modulate = Color(1, 1, 1)
+			animated_sprite.modulate = theme_color
 			animated_sprite.speed_scale = 1.0
 			_mood_speed_scale = 1.0
 
